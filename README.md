@@ -1,4 +1,4 @@
-# pyhap-maxcube
+# Beta! pyhap-maxcube
 [HAP-python](https://github.com/ikalchev/HAP-python) Accessories for [e-Q3](https://www.eq-3.com) MAX! devices, e.g. Cube and Thermostat.
 
 You can easily discover and add MAX! devices to your Home app and set the temperature.
@@ -8,7 +8,7 @@ You can easily discover and add MAX! devices to your Home app and set the temper
 
 ## Usage
 
-```
+```python
 from pyhap.accessory_driver import AccessoryDriver
 from pyhap.accessories.maxcube import MaxBridge
 
