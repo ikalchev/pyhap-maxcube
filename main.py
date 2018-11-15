@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.INFO, format="[%(module)s] %(message)s")
 
 driver = AccessoryDriver(port=51826)
 
-# Change `get_accessory` to `get_bridge` if you want to run a Bridge.
 driver.add_accessory(accessory=MaxBridge('192.168.1.247', 62910, driver, 'MaxBridge'))
 
 # We want SIGTERM (terminate) to be handled by the driver itself,

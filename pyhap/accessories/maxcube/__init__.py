@@ -8,14 +8,14 @@ import logging
 from maxcube.connection import MaxCubeConnection
 from maxcube.cube import MaxCube
 from maxcube.device import (MAX_THERMOSTAT,
-                            MAX_DEVICE_MODE_AUTOMATIC,
-                            MAX_DEVICE_BATTERY_OK)
+                            MAX_DEVICE_MODE_AUTOMATIC)
 
 from pyhap import accessory
 from pyhap.const import CATEGORY_THERMOSTAT
 from pyhap.util import event_wait
 
 
+### Human-readable constants
 MAX_MANUFACTURER = 'e-Q3'
 THERMOSTAT_MODEL = 'MAX! Thermostat'
 CUBE_MODEL = 'MAX! Cube'
@@ -51,16 +51,21 @@ class Thermostat(accessory.Accessory):
                               model=self.model)
 
         # Add a Battery service and hook it to device.battery
+        # XXX: Battery support is not in maxcube yet (opened a PR)
+        '''
         battery = self.add_preload_service('BatteryService')
+        low_battery = battery.get_characteristic('StatusLowBattery')
         battery.configure_char(
             'StatusLowBattery',
-            value=device.battery or 0,
+            value=device.battery
+                or low_battery.properties['ValidValues']['BatteryLevelNormal'],
             getter_callback=lambda: self.device.battery
         )
 
+        charging_state = battery.get_characteristic('ChargingState')
         battery.configure_char(
-            'StatusLowBattery',
-            value=2,  # NotChargeable
+            'ChargingState',
+            value=charging_state.properties['ValidValues']['NotChargeable'],
         )
 
         battery.configure_char(
@@ -68,6 +73,7 @@ class Thermostat(accessory.Accessory):
             getter_callback=
                 lambda: 100 if self.device.battery == MAX_DEVICE_BATTERY_OK else 0
         )
+        '''
 
         # Add a Thermostat service and hook it to the device
         service = self.add_preload_service('Thermostat')
@@ -149,4 +155,5 @@ class MaxBridge(accessory.Bridge):
     async def update(self):
         """Fetch the data from MAX! cube every 30 seconds."""
         while not await event_wait(self.driver.aio_stop_event, 30):
+            logging.debug('Updating MAX! info.')
             await self.driver.async_add_job(self.cube.update)
