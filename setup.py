@@ -25,6 +25,7 @@ setup(
         'pyhap.accessories.maxcube',
     ],
     install_requires=[
-        'HAP-python>=2.0',
+        'HAP-python >= 2.0.0',
+        'maxcube-api >= 0.1.0',
     ],
 )
