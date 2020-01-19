@@ -84,7 +84,8 @@ class Thermostat(accessory.Accessory):
         service.configure_char(
             'CurrentTemperature',
             value=device.actual_temperature,
-            getter_callback=lambda: self.device.actual_temperature or 0,
+            getter_callback=lambda: self.device.actual_temperature
+                                 or self.device.target_temperature,
             properties=self.common_properties
         )
 
@@ -92,7 +93,7 @@ class Thermostat(accessory.Accessory):
             'TargetTemperature',
             value=device.target_temperature,
             setter_callback=self._set_target_temperature,
-            getter_callback=lambda: self.device.target_temperature or 0,
+            getter_callback=lambda: self.device.target_temperature,
             properties=self.common_properties
         )
 
@@ -150,18 +151,17 @@ class Thermostat(accessory.Accessory):
         """
         service = self.get_service('Thermostat')
         service.get_characteristic('CurrentTemperature')\
-               .set_value(self.device.actual_temperature or 0)
+               .set_value(self.device.actual_temperature
+                       or self.device.target_temperature)
 
         service.get_characteristic('TargetTemperature')\
-               .set_value(self.device.target_temperature or 0)
+               .set_value(self.device.target_temperature)
 
         service.get_characteristic('CurrentHeatingCoolingState')\
                .set_value(self._current_state())
 
         service.get_characteristic('TargetHeatingCoolingState')\
                .set_value(self._target_state())
-
-
 
 
 class MaxBridge(accessory.Bridge):
